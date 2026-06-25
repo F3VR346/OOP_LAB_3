@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Игроки</title>
+    <style>
+        body{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#eee;font-family:Segoe UI,sans-serif;padding:20px}
+        h1{text-align:center;color:#4ecdc4}
+        .nav{text-align:center;margin-bottom:30px}
+        .nav a{display:inline-block;margin:0 10px;padding:10px 20px;background:#4ecdc4;color:#1a1a2e;text-decoration:none;border-radius:8px}
+        .form-panel{background:rgba(255,255,255,0.1);padding:20px;border-radius:15px;margin-bottom:30px}
+        .form-panel input,select,button{padding:10px;margin:5px;border-radius:8px;border:none}
+        .form-panel select{background:rgba(255,255,255,0.2);color:white}
+        .form-panel select option{background:#1a1a2e}
+        table{width:100%;border-collapse:collapse;background:rgba(255,255,255,0.1);border-radius:15px}
+        th,td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.2)}
+        th{background:rgba(0,0,0,0.3)}
+        .btn-danger{background:#ff6b6b;color:white;border:none;padding:5px 10px;border-radius:5px;cursor:pointer}
+        .btn-sm{background:#4ecdc4;color:#1a1a2e;border:none;padding:5px 10px;border-radius:5px;cursor:pointer;font-size:12px}
+        .btn-sm-danger{background:#ff6b6b;color:white;border:none;padding:2px 8px;border-radius:5px;cursor:pointer;font-size:11px}
+        .character-tag{display:inline-block;background:rgba(78,205,196,0.2);padding:3px 8px;border-radius:5px;margin:2px}
+    </style>
+</head>
+<body>
+<h1>👥 Игроки</h1>
+<div class="nav">
+    <a href="/characters">Все персонажи</a>
+    <a href="/characters/summoners">🔮 Призыватели</a>
+    <a href="/characters/paladins">⚔️ Паладины</a>
+</div>
+
+<!-- Форма добавления игрока -->
+<div class="form-panel">
+    <h3>➕ Добавить игрока</h3>
+    <form method="post" action="/players/add">
+        <input type="text" name="name" placeholder="Имя" required>
+        <input type="text" name="email" placeholder="Email" required>
+        <button type="submit" style="background:#00b894;color:white">✅ Создать</button>
+    </form>
+</div>
+
+<!-- Форма добавления персонажа игроку -->
+<div class="form-panel">
+    <h3>🔗 Привязать персонажа к игроку</h3>
+    <form method="post" action="/players/add-character">
+        <select name="playerId" required>
+            <option value="">Выберите игрока</option>
+            <option th:each="p : ${players}" th:value="${p.id}" th:text="${p.name} + ' (' + ${p.email} + ')'"></option>
+        </select>
+        <select name="characterId" required>
+            <option value="">Выберите персонажа</option>
+            <option th:each="c : ${allCharacters}" th:value="${c.id}" th:text="${c.getClass().getSimpleName() == 'Summoner' ? '🔮' : '⚔️'} + ' ' + ${c.name} + ' (ур.' + ${c.level} + ')'"></option>
+        </select>
+        <button type="submit" style="background:#4ecdc4;color:#1a1a2e">🔗 Привязать</button>
+    </form>
+</div>
+
+<!-- Таблица игроков -->
+<table>
+    <thead>
+    <tr><th>ID</th><th>Имя</th><th>Email</th><th>Персонажи</th><th>Действия</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="p : ${players}">
+        <td th:text="${p.id}"></td>
+        <td th:text="${p.name}"></td>
+        <td th:text="${p.email}"></td>
+        <td>
+                <span th:each="c : ${p.characters}">
+                    <span class="character-tag">
+                        <span th:text="${c.getClass().getSimpleName() == 'Summoner' ? '🔮' : '⚔️'}"></span>
+                        <span th:text="${c.name}"></span>
+
+                        <form method="post" th:action="@{'/players/remove-character/' + ${p.id} + '/' + ${c.id}}" style="display:inline">
+                            <button type="submit" class="btn-sm-danger" onclick="return confirm('Отвязать персонажа?')">✖</button>
+                        </form>
+                    </span>
+                </span>
+            <span th:if="${p.characters.empty}" style="color:#aaa">Нет персонажей</span>
+        </td>
+        <td>
+            <form method="post" th:action="@{'/players/delete/' + ${p.id}}" style="display:inline">
+                <button type="submit" class="btn-danger" onclick="return confirm('Удалить игрока?')">🗑️</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

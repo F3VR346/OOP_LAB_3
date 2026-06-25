@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Призыватели</title>
+    <style>
+        body{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#eee;padding:20px}
+        h1{text-align:center;color:#4ecdc4}
+        .nav{text-align:center;margin-bottom:30px}
+        .nav a{display:inline-block;margin:0 10px;padding:10px 20px;background:#4ecdc4;color:#1a1a2e;text-decoration:none;border-radius:8px}
+        .form-panel{background:rgba(255,255,255,0.1);padding:20px;border-radius:15px;margin-bottom:30px}
+        .form-panel input,button{padding:10px;margin:5px;border-radius:8px;border:none}
+        table{width:100%;border-collapse:collapse;background:rgba(255,255,255,0.1);border-radius:15px}
+        th,td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.2)}
+        .btn-danger{background:#ff6b6b;color:white;border:none;padding:5px 10px;border-radius:5px}
+    </style>
+</head>
+<body>
+<h1>🔮 Призыватели</h1>
+<div class="nav">
+    <a href="/characters">Все</a>
+    <a href="/characters/paladins">⚔️ Паладины</a>
+    <a href="/players">👥 Игроки</a>
+</div>
+<div class="form-panel"><h3>➕ Добавить призывателя</h3>
+    <form method="post" action="/characters/add/summoner">
+        <input type="text" name="name" placeholder="Имя" required>
+        <input type="number" name="level" placeholder="Уровень" value="1">
+        <input type="number" name="health" placeholder="Здоровье" value="80">
+        <input type="number" name="mana" placeholder="Мана" value="100">
+        <input type="number" name="summonsCount" placeholder="Призывы" value="0">
+        <button type="submit" style="background:#00b894;color:white">✅ Создать</button>
+    </form></div>
+<table>
+    <thead><tr><th>ID</th><th>Имя</th><th>Уровень</th><th>Здоровье</th><th>Мана</th><th>Призывы</th><th>Действия</th></tr></thead>
+    <tbody>
+    <tr th:each="s : ${summoners}">
+        <td th:text="${s.id}"></td><td th:text="${s.name}"></td><td th:text="${s.level}"></td><td th:text="${s.health}"></td>
+        <td th:text="${s.mana}"></td><td th:text="${s.summonsCount}"></td>
+        <td><form method="post" th:action="@{'/characters/delete/summoner/' + s.id}" style="display:inline">
+            <button type="submit" class="btn-danger" onclick="return confirm('Удалить?')">🗑️</button></form></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Логи действий</title>
+    <style>
+        body{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#eee;padding:20px}
+        h1{color:#4ecdc4}
+        table{width:100%;border-collapse:collapse;background:rgba(255,255,255,0.1);border-radius:15px}
+        th,td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.2)}
+        th{background:rgba(0,0,0,0.3)}
+        .btn{display:inline-block;padding:10px 20px;background:#4ecdc4;color:#1a1a2e;text-decoration:none;border-radius:8px}
+    </style>
+</head>
+<body>
+<h1>📜 Логи действий: <span th:text="${character.name}"></span></h1>
+<a href="/characters" class="btn">← Назад</a>
+
+<br><br>
+
+<table>
+    <thead>
+    <tr><th>Время</th><th>Действие</th><th>Описание</th><th>Изменение ресурса</th><th>Урон</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="log : ${logs}">
+        <td th:text="${#temporals.format(log.timestamp, 'dd.MM.yyyy HH:mm:ss')}"></td>
+        <td th:text="${log.actionType}"></td>
+        <td th:text="${log.description}"></td>
+        <td th:text="${log.resourceChange}"></td>
+        <td th:text="${log.damageTaken}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

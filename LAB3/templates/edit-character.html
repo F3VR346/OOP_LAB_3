@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование персонажа</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #eee;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4ecdc4;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #aaa;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .row .form-group {
+            flex: 1;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: #4ecdc4;
+            color: #1a1a2e;
+        }
+
+        .btn-secondary {
+            background: #bdc3c7;
+            color: #2c3e50;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .buttons {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .fieldset {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .fieldset legend {
+            padding: 0 10px;
+            color: #ffd93d;
+        }
+
+        .type-badge {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <div class="type-badge" th:if="${character instanceof T(com.example.lab3.entity.Summoner)}">
+        🔮 ПРИЗЫВАТЕЛЬ 🔮
+    </div>
+    <div class="type-badge" th:unless="${character instanceof T(com.example.lab3.entity.Summoner)}">
+        ⚔️ ПАЛАДИН ⚔️
+    </div>
+
+    <h1>✏️ Редактирование персонажа</h1>
+
+    <form method="post" th:action="|/characters/edit/${type}/${character.id}|">
+        <div class="form-group">
+            <label>📛 Имя</label>
+            <input type="text" name="name" th:value="${character.name}" required>
+        </div>
+
+        <div class="row">
+            <div class="form-group">
+                <label>📈 Уровень (1-100)</label>
+                <input type="number" name="level" th:value="${character.level}" min="1" max="100">
+            </div>
+            <div class="form-group">
+                <label>❤️ Здоровье</label>
+                <input type="number" name="health" th:value="${character.health}" min="1">
+            </div>
+        </div>
+
+        <!-- Поля для Призывателя -->
+        <div th:if="${character instanceof T(com.example.lab3.entity.Summoner)}" class="fieldset">
+            <legend>🔮 Характеристики Призывателя</legend>
+            <div class="row">
+                <div class="form-group">
+                    <label>💙 Мана (0-500)</label>
+                    <input type="number" name="mana" th:value="${character.mana}" min="0" max="500">
+                </div>
+                <div class="form-group">
+                    <label>🐉 Кол-во призывов</label>
+                    <input type="number" name="summonsCount" th:value="${character.summonsCount}" min="0" max="50">
+                </div>
+            </div>
+        </div>
+
+        <!-- Поля для Паладина -->
+        <div th:unless="${character instanceof T(com.example.lab3.entity.Summoner)}" class="fieldset">
+            <legend>⚔️ Характеристики Паладина</legend>
+            <div class="row">
+                <div class="form-group">
+                    <label>🛡️ Броня (0-500)</label>
+                    <input type="number" name="armor" th:value="${character.armor}" min="0" max="500">
+                </div>
+                <div class="form-group">
+                    <label>✨ Святая сила (0-100)</label>
+                    <input type="number" name="holyPower" th:value="${character.holyPower}" min="0" max="100">
+                </div>
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button type="submit" class="btn btn-primary">💾 Сохранить изменения</button>
+            <a href="/characters" class="btn btn-secondary">❌ Отмена</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
